@@ -21,11 +21,11 @@ defmodule Placemeter.Client do
 
 
     def process_url(url) do
-        IO.inspect @endpoint <> url
+        @endpoint <> url |> IO.inspect
     end
 
     def process_request_headers(headers) do
-        IO.inspect headers |> Dict.put(:"Authorization", "Token #{@token}")
+        headers |> Dict.put(:"Authorization", "Token #{@token}") |> IO.inspect
     end
 
     def measurementpoints do
@@ -52,8 +52,8 @@ defmodule Placemeter.Client do
         end
     end
 
-    def measurementpoints(point_id, start, en, res \\ "hour", metrics \\ "all") do
-        case Placemeter.Client.get("measurementpoints/#{point_id}/data", [], params: %{start: start, "end": en, resolution: res, metrics: metrics}) do
+    def measurementpoints(point_id, start, en, res \\ "hour", metrics \\ "all", classes \\ "all") do
+        case Placemeter.Client.get("measurementpoints/#{point_id}/data", [], params: %{start: start, "end": en, resolution: res, classes: classes}) do
             {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
                 {:ok, body
                     |> IO.inspect

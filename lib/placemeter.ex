@@ -36,8 +36,8 @@ defmodule Placemeter do
         now = :erlang.system_time(:seconds)
         yesterday = now - time_ago
         case Placemeter.Client.measurementpoints(point.id, yesterday, now) do
-            {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-                %{point | data: body}
+            {:ok, %{"data" => data}} ->
+                Enum.map(data, fn(record) -> IO.inspect record end)
             {:error, reason} ->
                 %{point | data: reason}
         end
