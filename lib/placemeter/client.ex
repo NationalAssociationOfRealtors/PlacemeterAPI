@@ -19,13 +19,13 @@ defmodule Placemeter.Client do
         defstruct [:name, :id]
     end
 
-
     def process_url(url) do
         IO.inspect @endpoint <> url
     end
 
     def process_request_headers(headers) do
-        IO.inspect headers |> Dict.put(:"Authorization", "Token #{@token}")
+        token = Application.get_env(:placemeter, :auth_token)
+        IO.inspect headers |> Dict.put(:"Authorization", "Token #{token}")
     end
 
     def measurementpoints do
