@@ -6,11 +6,11 @@ defmodule Placemeter do
     end
 
     def measurementpoints(time_ago \\ 1000) do
-        GenServer.call(__MODULE__, {:measurementpoints, time_ago})
+        GenServer.call(__MODULE__, {:measurementpoints, time_ago}, 10000)
     end
 
     def measurementpoint(id, time_ago \\ 1000) do
-        GenServer.call(__MODULE__, {:measurementpoint, id, time_ago})
+        GenServer.call(__MODULE__, {:measurementpoint, id, time_ago}, 10000)
     end
 
     def handle_call({:measurementpoints, time_ago}, _from, state) do
@@ -36,8 +36,8 @@ defmodule Placemeter do
         now = :erlang.system_time(:seconds)
         yesterday = now - time_ago
         case Placemeter.Client.measurementpoints(point.id, yesterday, now) do
-            {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-                %{point | data: body}
+            {:ok, %{"data" => data}} ->
+                Enum.map(data, fn(record) -> %{:id => point.id, :data => record} end)
             {:error, reason} ->
                 %{point | data: reason}
         end
