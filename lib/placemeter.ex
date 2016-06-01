@@ -5,12 +5,12 @@ defmodule Placemeter do
         GenServer.start_link(__MODULE__, token, name: __MODULE__)
     end
 
-    def measurementpoints(time_ago \\ 1000) do
-        GenServer.call(__MODULE__, {:measurementpoints, time_ago}, 10000)
+    def measurementpoints(pm, time_ago \\ 1000) do
+        GenServer.call(pm, {:measurementpoints, time_ago}, 10000)
     end
 
-    def measurementpoint(id, time_ago \\ 1000) do
-        GenServer.call(__MODULE__, {:measurementpoint, id, time_ago}, 10000)
+    def measurementpoint(pm, id, time_ago \\ 1000) do
+        GenServer.call(pm, {:measurementpoint, id, time_ago}, 10000)
     end
 
     def init(token) do
