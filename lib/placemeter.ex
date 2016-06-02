@@ -43,7 +43,7 @@ defmodule Placemeter do
         yesterday = now - time_ago
         case Placemeter.Client.measurementpoints(token, point.id, yesterday, now) do
             {:ok, %{"data" => data}} ->
-                Enum.map(data, fn(record) -> %Point{point | :data => record} |> IO.inspect end)
+                %Point{point | :data => data}
             {:error, reason} ->
                 %{point | data: reason}
         end
