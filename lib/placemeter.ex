@@ -1,6 +1,8 @@
 defmodule Placemeter do
     use GenServer
 
+    alias Placemeter.Client.Point
+
     def start_link(token) do
         GenServer.start_link(__MODULE__, token, name: __MODULE__)
     end
@@ -41,7 +43,7 @@ defmodule Placemeter do
         yesterday = now - time_ago
         case Placemeter.Client.measurementpoints(token, point.id, yesterday, now) do
             {:ok, %{"data" => data}} ->
-                Enum.map(data, fn(record) -> %{:id => point.id, :data => record} end)
+                Enum.map(data, fn(record) -> %Point{point | :data => record} |> IO.inspect end)
             {:error, reason} ->
                 %{point | data: reason}
         end

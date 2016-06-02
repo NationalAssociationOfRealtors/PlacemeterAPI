@@ -19,36 +19,39 @@ defmodule Placemeter.Client do
         @endpoint <> url
     end
 
-    def measurementpoints(token) do
-        case Placemeter.Client.get("measurementpoints", Dict.put([], :"Authorization", "Token #{token}")) do
+    defp call(url, token, parameters \\ %{}) do
+        case Placemeter.Client.get(url, Dict.put([], :"Authorization", "Token #{token}"), params: parameters) do
             {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-                {:ok, body
-                    |> Poison.decode!(as: [%Point{location: %Location{}, metrics: [%Metric{}], classes: []}])
-                }
-            {:ok, %HTTPoison.Response{status_code: 400, body: body}} ->
+                {:ok, body}
+            {:ok, %HTTPoison.Response{body: body, status_code: status_code}} when status_code > 400 ->
                 {:error, body}
+        end
+    end
+
+    def measurementpoints(token) do
+        case call("measurementpoints", token) do
+            {:ok, body} ->
+                {:ok, body |> Poison.decode!(as: [%Point{location: %Location{}, metrics: [%Metric{}], classes: []}])}
+            {:error, body} ->
+                {:error, body |> Poison.Parser.parse!}
         end
     end
 
     def measurementpoints(token, point_id) do
-        case Placemeter.Client.get("measurementpoints/#{point_id}", Dict.put([], :"Authorization", "Token #{token}")) do
-            {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-                {:ok, body
-                    |> Poison.decode!(as: %Point{location: %Location{}, metrics: [%Metric{}], classes: []})
-                }
-            {:ok, %HTTPoison.Response{status_code: 400, body: body}} ->
-                {:error, body}
+        case call("measurementpoints/#{point_id}", token) do
+            {:ok, body} ->
+                {:ok, body |> Poison.decode!(as: %Point{location: %Location{}, metrics: [%Metric{}], classes: []})}
+            {:error, body} ->
+                {:error, body |> Poison.Parser.parse!}
         end
     end
 
     def measurementpoints(token, point_id, start, en, res \\ "minute", metrics \\ "all", classes \\ "all") do
-        case Placemeter.Client.get("measurementpoints/#{point_id}/data", Dict.put([], :"Authorization", "Token #{token}"), params: %{start: start, "end": en, resolution: res, classes: classes}) do
-            {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-                {:ok, body
-                    |> Poison.Parser.parse!
-                }
-            {:ok, %HTTPoison.Response{status_code: 400, body: body}} ->
-                {:error, body}
+        case call("measurementpoints/#{point_id}/data", token, %{start: start, "end": en, resolution: res, classes: classes}) do
+            {:ok, body} ->
+                {:ok, body |> Poison.Parser.parse!}
+            {:error, body} ->
+                {:error, body |> Poison.Parser.parse!}
         end
 
     end
