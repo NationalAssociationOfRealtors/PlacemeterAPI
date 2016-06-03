@@ -38,7 +38,6 @@ defmodule Placemeter do
     end
 
     def get_point(token, point, time_ago) do
-        IO.inspect point
         now = :erlang.system_time(:seconds)
         yesterday = now - time_ago
         case Placemeter.Client.measurementpoints(token, point.id, yesterday, now) do
