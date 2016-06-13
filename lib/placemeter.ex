@@ -8,11 +8,11 @@ defmodule Placemeter do
     end
 
     def measurementpoints(pm, time_ago \\ 1000) do
-        GenServer.call(pm, {:measurementpoints, time_ago}, 10000)
+        GenServer.call(pm, {:measurementpoints, time_ago}, :infinity)
     end
 
     def measurementpoint(pm, id, time_ago \\ 1000) do
-        GenServer.call(pm, {:measurementpoint, id, time_ago}, 10000)
+        GenServer.call(pm, {:measurementpoint, id, time_ago}, :infinity)
     end
 
     def init(token) do

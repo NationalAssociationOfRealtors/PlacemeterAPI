@@ -25,6 +25,8 @@ defmodule Placemeter.Client do
                 {:ok, body}
             {:ok, %HTTPoison.Response{body: body, status_code: status_code}} when status_code > 400 ->
                 {:error, body}
+            {:error, reason} ->
+                {:error, reason}
         end
     end
 
