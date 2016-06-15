@@ -35,7 +35,7 @@ defmodule Placemeter.Client do
             {:ok, body} ->
                 {:ok, body |> Poison.decode!(as: [%Point{location: %Location{}, metrics: [%Metric{}], classes: []}])}
             {:error, body} ->
-                {:error, body |> Poison.Parser.parse!}
+                {:error, body}
         end
     end
 
@@ -44,7 +44,7 @@ defmodule Placemeter.Client do
             {:ok, body} ->
                 {:ok, body |> Poison.decode!(as: %Point{location: %Location{}, metrics: [%Metric{}], classes: []})}
             {:error, body} ->
-                {:error, body |> Poison.Parser.parse!}
+                {:error, body}
         end
     end
 
