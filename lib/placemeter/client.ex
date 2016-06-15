@@ -53,7 +53,7 @@ defmodule Placemeter.Client do
             {:ok, body} ->
                 {:ok, body |> Poison.Parser.parse!}
             {:error, body} ->
-                {:error, body |> Poison.Parser.parse!}
+                {:error, body}
         end
 
     end
