@@ -4,7 +4,7 @@ defmodule Placemeter do
     alias Placemeter.Client.Point
 
     def start_link(token) do
-        GenServer.start_link(__MODULE__, token, name: __MODULE__)
+        GenServer.start_link(__MODULE__, token)
     end
 
     def measurementpoints(pm, time_ago \\ 1000) do
